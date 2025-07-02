@@ -1,8 +1,6 @@
 # ec-kong: Microservices EC Site Sample
 
-This is a sample e-commerce site built with a microservices architecture, inspired by the famous "Sock Shop" demo application.
-
-It is designed to be deployed on Kubernetes and is intended for use in service mesh demonstrations.
+This is a sample e-commerce site built with a microservices architecture, inspired by the famous "Sock Shop" demo application. It is designed to be deployed on Kubernetes and is intended for use in service mesh demonstrations.
 
 ## Architecture
 
@@ -12,9 +10,8 @@ graph TD
     FrontEnd -->|API| Catalogue(catalogue)
     FrontEnd -->|API| Carts(carts)
     FrontEnd -->|API| Orders(orders)
-    FrontEnd -->|API| Users(users)
 
-    style Catalogue fill:#ffcccc,stroke:#333,stroke-width:2px
+    style Orders fill:#ffcccc,stroke:#333,stroke-width:2px
 ```
 
 The application is composed of the following microservices:
@@ -23,11 +20,10 @@ The application is composed of the following microservices:
 - **catalogue**: Manages product information (Node.js/Express).
 - **carts**: Manages shopping cart data (Node.js/Express).
 - **orders**: Manages order processing (Node.js/Express).
-- **users**: Manages user authentication and data (Node.js/Express).
 
 ### Intentional Failure for Service Mesh Demos
 
-For the purpose of demonstrating service mesh capabilities like retries and circuit breakers, the **catalogue** service has been intentionally designed to fail. It will return a `500 Internal Server Error` approximately 50% of the time when its `/catalogue` endpoint is called.
+For the purpose of demonstrating service mesh capabilities like retries and circuit breakers, the **orders** service has been intentionally designed to fail. It will return a `500 Internal Server Error` approximately 50% of the time when an order is placed.
 
 ## How to Use
 
@@ -64,8 +60,8 @@ For each service directory (`/catalogue`, `/carts`, etc.):
 
 ```bash
 # Example for the catalogue service
-docker build -t your-registry/catalogue:latest .
-docker push your-registry/catalogue:latest
+docker image build -t your-registry/catalogue:latest .
+docker image push your-registry/catalogue:latest
 ```
 
 _Remember to update the `image` field in the corresponding Kubernetes deployment files (`/kubernetes/_-deployment.yaml`) to point to your registry.\*
