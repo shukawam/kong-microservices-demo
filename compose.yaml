@@ -1,0 +1,49 @@
+services:
+  front-end:
+    build:
+      context: ./front-end
+    ports:
+      - "3000:80"
+    depends_on:
+      - catalogue
+      - carts
+      - orders
+
+  catalogue:
+    build:
+      context: ./catalogue
+    ports:
+      - "3001:3001"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./catalogue/package.json
+        - action: sync
+          path: ./catalogue/index.js
+          target: /app/index.js
+
+  carts:
+    build:
+      context: ./carts
+    ports:
+      - "3002:3002"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./carts/package.json
+        - action: sync
+          path: ./carts/index.js
+          target: /app/index.js
+
+  orders:
+    build:
+      context: ./orders
+    ports:
+      - "3003:3003"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./orders/package.json
+        - action: sync
+          path: ./orders/index.js
+          target: /app/index.js
