@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function CartPage() {
@@ -57,17 +57,17 @@ function CartPage() {
         alert('Order placed successfully!');
         console.log('Order created:', order);
         // Clear the cart after successful order
-        return fetch('/cart'); // Assuming a DELETE /cart endpoint to clear all items
+        return fetch('/cart', { method: 'DELETE' }); // Assuming a DELETE /cart endpoint to clear all items
       })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to clear cart');
         }
         setCartItems([]); // Clear local cart state
-      fetchCartItems(); // Refresh cart items in App.js
-      navigate('/'); // Navigate back to home after checkout
-    })
-    .catch(error => {
+        fetchCartItems(); // Refresh cart items in App.js
+        navigate('/'); // Navigate back to home after checkout
+      })
+      .catch(error => {
         console.error('Error during checkout:', error);
         alert('Error during checkout.');
       });

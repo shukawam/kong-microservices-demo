@@ -2,8 +2,9 @@ services:
   front-end:
     build:
       context: ./front-end
+    container_name: front-end
     ports:
-      - "3000:80"
+      - 3000:3000
     depends_on:
       - catalogue
       - carts
@@ -12,8 +13,9 @@ services:
   catalogue:
     build:
       context: ./catalogue
+    container_name: catalogue
     ports:
-      - "3001:3001"
+      - 3001:3001
     develop:
       watch:
         - action: rebuild
@@ -25,8 +27,9 @@ services:
   carts:
     build:
       context: ./carts
+    container_name: carts
     ports:
-      - "3002:3002"
+      - 3002:3002
     develop:
       watch:
         - action: rebuild
@@ -38,8 +41,9 @@ services:
   orders:
     build:
       context: ./orders
+    container_name: orders
     ports:
-      - "3003:3003"
+      - 3003:3003
     develop:
       watch:
         - action: rebuild
