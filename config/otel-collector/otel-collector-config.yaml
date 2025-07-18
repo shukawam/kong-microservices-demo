@@ -19,10 +19,6 @@ receivers:
           static_configs:
             - targets:
                 - otel-collector:8888
-        - job_name: prometheus
-          static_configs:
-            - targets:
-                - localhost:9090
         - job_name: tempo
           static_configs:
             - targets:
@@ -62,11 +58,11 @@ service:
         - batch
       exporters:
         - otlphttp/tempo
-    metrics:
-      receivers:
-        - prometheus
-      exporters:
-        - prometheus
+    # metrics:
+    #   receivers:
+    #     - prometheus
+    #   exporters:
+    #     - prometheus
     logs:
       receivers:
         - otlp

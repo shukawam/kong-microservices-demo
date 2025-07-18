@@ -1,56 +1,68 @@
+x-default: &default
+  networks:
+    - kong-network
+  restart: on-failure
+x-kong-env: &kong-env
+  KONG_DATABASE: postgres
+  KONG_PG_HOST: database
+  KONG_PG_PASSWORD: kong
+  KONG_PASSWORD: kong
+x-otel-env: &otel-env
+  OTEL_TRACES_EXPORTER: otlp
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+  OTEL_NODE_RESOURCE_DETECTORS: env,host,os
+  NODE_OPTIONS: --require @opentelemetry/auto-instrumentations-node/register
+
+networks:
+  kong-network:
+
 services:
   front-end:
+    <<: *default
     build:
       context: ./front-end
     container_name: front-end
     ports:
-      - 3000:3000
+      - 8080:3000
+    environment:
+      GATEWAY_ENDPOINT: http://gateway:8000
     depends_on:
       - catalogue
       - carts
       - orders
 
   catalogue:
+    <<: *default
     build:
       context: ./catalogue
     container_name: catalogue
     ports:
       - 3001:3001
-    develop:
-      watch:
-        - action: rebuild
-          path: ./catalogue/package.json
-        - action: sync
-          path: ./catalogue/index.js
-          target: /app/index.js
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: catalogue
 
   carts:
+    <<: *default
     build:
       context: ./carts
     container_name: carts
     ports:
       - 3002:3002
-    develop:
-      watch:
-        - action: rebuild
-          path: ./carts/package.json
-        - action: sync
-          path: ./carts/index.js
-          target: /app/index.js
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: carts
 
   orders:
+    <<: *default
     build:
       context: ./orders
     container_name: orders
     ports:
       - 3003:3003
-    develop:
-      watch:
-        - action: rebuild
-          path: ./orders/package.json
-        - action: sync
-          path: ./orders/index.js
-          target: /app/index.js
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: orders
 
   database:
     <<: *default
