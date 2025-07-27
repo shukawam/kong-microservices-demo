@@ -98,7 +98,7 @@ services:
       - 8000:8000
       - 8001:8001
       - 8002:8002
-      - 8007:8007 # Status API
+      - 8100:8100 # Status API
     environment:
       <<: *kong-env
       KONG_PROXY_ACCESS_LOG: /dev/stdout
@@ -225,10 +225,10 @@ services:
     volumes:
       - ./config/otel-collector/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
     ports:
-      - 4317
-      - 4318
-      - 8888
-      - 8889
+      - 4317:4317
+      - 4318:4318
+      - 8888:8888
+      - 8889:8889
 
   # --- Grafana ---
   grafana:
