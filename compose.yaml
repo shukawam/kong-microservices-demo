@@ -20,7 +20,7 @@ services:
   front-end:
     <<: *default
     build:
-      context: ./front-end
+      context: ./app/front-end
     container_name: front-end
     ports:
       - 8080:3000
@@ -34,7 +34,7 @@ services:
   catalogue:
     <<: *default
     build:
-      context: ./catalogue
+      context: ./app/catalogue
     container_name: catalogue
     ports:
       - 3001:3001
@@ -45,7 +45,7 @@ services:
   carts:
     <<: *default
     build:
-      context: ./carts
+      context: ./app/carts
     container_name: carts
     ports:
       - 3002:3002
@@ -56,7 +56,7 @@ services:
   orders:
     <<: *default
     build:
-      context: ./orders
+      context: ./app/orders
     container_name: orders
     ports:
       - 3003:3003
@@ -96,13 +96,8 @@ services:
       - migrations
     ports:
       - 8000:8000
-      - 8443:8443
       - 8001:8001
-      - 8444:8444
       - 8002:8002
-      - 8445:8445
-      - 8003:8003
-      - 8004:8004
       - 8007:8007 # Status API
     environment:
       <<: *kong-env
@@ -118,7 +113,17 @@ services:
       KONG_TRACING_INSTRUMENTATIONS: all
       KONG_TRACING_SAMPLING_RATE: 1.0
       # Enable Status API for Data Plane
-      KONG_STATUS_LISTEN: 0.0.0.0:8007
+      KONG_STATUS_LISTEN: 0.0.0.0:8100
+  deck:
+    <<: *default
+    image: kong/deck:v1.49.0
+    container_name: deck
+    working_dir: /files
+    volumes:
+      - ./config/kong/kong.yaml:/files/kong.yaml
+    command: ["gateway", "sync", "--kong-addr", "http://gateway:8001", "kong.yaml"]
+    depends_on:
+      - gateway
 
   # --- Redis ---
   redis:
