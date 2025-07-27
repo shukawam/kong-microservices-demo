@@ -13,11 +13,6 @@ receivers:
           static_configs:
             - targets:
                 - gateway:8100 # Status API
-        - job_name: otel-collector
-          scrape_interval: 5s
-          static_configs:
-            - targets:
-                - otel-collector:8888
         - job_name: tempo
           static_configs:
             - targets:
@@ -57,11 +52,11 @@ service:
         - batch
       exporters:
         - otlphttp/tempo
-    # metrics:
-    #   receivers:
-    #     - prometheus
-    #   exporters:
-    #     - prometheus
+    metrics:
+      receivers:
+        - prometheus
+      exporters:
+        - prometheus
     logs:
       receivers:
         - otlp
