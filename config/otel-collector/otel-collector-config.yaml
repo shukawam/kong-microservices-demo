@@ -12,8 +12,7 @@ receivers:
           scrape_interval: 5s
           static_configs:
             - targets:
-                - gateway:8001 # Control Plane
-                - gateway:8007 # Data Plane
+                - gateway:8100 # Status API
         - job_name: otel-collector
           scrape_interval: 5s
           static_configs:
