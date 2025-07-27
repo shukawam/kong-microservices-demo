@@ -4,15 +4,7 @@ This is a sample e-commerce site built with a microservices architecture, inspir
 
 ## Architecture
 
-```mermaid
-graph TD
-    User[User] -->|Browser| FrontEnd(front-end)
-    FrontEnd -->|API| Catalogue(catalogue)
-    FrontEnd -->|API| Carts(carts)
-    FrontEnd -->|API| Orders(orders)
-
-    style Orders fill:#ffcccc,stroke:#333,stroke-width:2px
-```
+![architecture](./img/architecture.png)
 
 The application is composed of the following microservices:
 
