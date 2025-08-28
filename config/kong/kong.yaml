@@ -30,7 +30,7 @@ plugins:
       traces_endpoint: http://otel-collector:4318/v1/traces
       logs_endpoint: http://otel-collector:4318/v1/logs
       resource_attributes:
-        service.name: kong-otel-plugin
+        service.name: kong
   - name: prometheus
     config:
       per_consumer: true
@@ -45,4 +45,14 @@ plugins:
       http_endpoint: http://fluent-bit:2020
   - name: rate-limiting-advanced
     config:
-      path: /dev/stdout
+      limit:
+        - 100
+      window_size:
+        - 60
+      window_type: sliding
+      namespace: kong-rate-limiting
+      sync_rate: 0
+      strategy: redis
+      redis:
+        host: redis
+        port: 6379
