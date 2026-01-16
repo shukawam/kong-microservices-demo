@@ -26,7 +26,9 @@ jobs:
           deck-version: 1.54.0
       - name: Linting OpenAPI Spec
         run: |
-          inso lint spec ./schema/openapi.yaml
+          inso lint spec ./schema/cart.yaml
+          inso lint spec ./schema/catalogue.yaml
+          inso lint spec ./schema/order.yaml
       - name: Convert OAS to decK format
         run: |
           deck file openapi2kong -s ./schema/cart.yaml -o cart.yaml
