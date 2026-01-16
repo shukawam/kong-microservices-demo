@@ -66,7 +66,7 @@ services:
 
   database:
     <<: *default
-    image: postgres:13
+    image: postgres:17
     container_name: database
     environment:
       POSTGRES_USER: kong
@@ -81,7 +81,7 @@ services:
       retries: 3
   migrations:
     <<: *default
-    image: &kong-gateway-image kong/kong-gateway:3.11.0.0
+    image: &kong-gateway-image kong/kong-gateway:3.13.0.0
     container_name: migrations
     depends_on:
       - database
@@ -121,7 +121,8 @@ services:
     working_dir: /files
     volumes:
       - ./config/kong/kong.yaml:/files/kong.yaml
-    command: ["gateway", "sync", "--kong-addr", "http://gateway:8001", "kong.yaml"]
+    command:
+      ["gateway", "sync", "--kong-addr", "http://gateway:8001", "kong.yaml"]
     depends_on:
       - gateway
 
@@ -158,7 +159,7 @@ services:
     container_name: tempo
     command: ["-config.file=/etc/tempo.yaml"]
     volumes:
-      - ./config/tempo/tempo.yaml:/etc/tempo.yaml
+      - ./config/observability/tempo/tempo.yaml:/etc/tempo.yaml
     ports:
       - 4317 # gRPC
       - 4318 # HTTP
@@ -176,19 +177,9 @@ services:
       - --enable-feature=exemplar-storage
       - --enable-feature=native-histograms
     volumes:
-      - ./config/prometheus/prometheus.yaml:/etc/prometheus.yaml
+      - ./config/observability/prometheus/prometheus.yaml:/etc/prometheus.yaml
     ports:
       - 9090
-
-  # --- Fluent Bit ---
-  fluent-bit:
-    <<: *default
-    image: fluent/fluent-bit:3.1.2
-    container_name: fluent-bit
-    command:
-      - "--config=/fluent-bit/etc/fluent-bit.yaml"
-    volumes:
-      - ./config/fluent-bit/fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml
 
   # --- Loki ---
   loki-init:
@@ -209,7 +200,7 @@ services:
       LOG_CLUSTER_DEPTH: "8"
       LOG_SIM_TH: "0.3"
     volumes:
-      - ./config/loki/loki.yaml:/etc/loki/loki.yaml
+      - ./config/observability/loki/loki.yaml:/etc/loki/loki.yaml
     ports:
       - 3100
       - 7946
@@ -223,7 +214,7 @@ services:
     image: otel/opentelemetry-collector-contrib:0.128.0
     container_name: otel-collector
     volumes:
-      - ./config/otel-collector/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+      - ./config/observability/otel-collector/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
     ports:
       - 4317:4317
       - 4318:4318
@@ -236,9 +227,9 @@ services:
     image: grafana/grafana:12.0.1
     container_name: grafana
     volumes:
-      - ./config/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-      - ./config/grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
-      - ./config/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./config/observability/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./config/observability/grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - ./config/observability/grafana/dashboards:/var/lib/grafana/dashboards
     environment:
       GF_AUTH_ANONYMOUS_ENABLED: true
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin

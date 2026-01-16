@@ -44,25 +44,25 @@ jobs:
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             -t ${{ env.DOCKER_USERNAME }}/front-end:${{ steps.set_image_tag.outputs.IMAGE_TAG }} \
-            --push ./front-end
+            --push ./frontend
 
       - name: Build and Push catalogue image
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             -t ${{ env.DOCKER_USERNAME }}/catalogue:${{ steps.set_image_tag.outputs.IMAGE_TAG }} \
-            --push ./catalogue
+            --push ./apis/catalogue
 
       - name: Build and Push carts image
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             -t ${{ env.DOCKER_USERNAME }}/carts:${{ steps.set_image_tag.outputs.IMAGE_TAG }} \
-            --push ./carts
+            --push ./apis/cart
 
       - name: Build and Push orders image
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             -t ${{ env.DOCKER_USERNAME }}/orders:${{ steps.set_image_tag.outputs.IMAGE_TAG }} \
-            --push ./orders
+            --push ./apis/order

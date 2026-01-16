@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: Kong Microservices Demo
   description: API for kong microservices demo application
@@ -10,8 +10,6 @@ servers:
   - url: http://localhost:8000
     description: Local development server
 tags:
-  - name: gorilla-ec
-    description: Endpoints related to the Gorilla E-Commerce application
   - name: cart
     description: Endpoints related to the shopping cart
   - name: catalogue
@@ -21,11 +19,10 @@ tags:
 paths:
   /cart:
     get:
-      operationId: getCartContents
+      operationId: get-cart-contents
       summary: Get cart contents
       description: Retrieve the current contents of the shopping cart
       tags:
-        - gorilla-ec
         - cart
       responses:
         "200":
@@ -35,44 +32,41 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/cartItem"
+                  $ref: "#/components/schemas/cart"
     post:
-      operationId: addItemToCart
+      operationId: add-item-to-cart
       summary: Add an item to the cart
       description: Add a new item to the shopping cart
       tags:
-        - gorilla-ec
         - cart
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/cartItem"
+              $ref: "#/components/schemas/cart"
       responses:
         "201":
           description: Item added
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/cartItem"
+                $ref: "#/components/schemas/cart"
     delete:
-      operationId: clearCart
+      operationId: clear-cart
       summary: Clear the cart
       description: Remove all items from the shopping cart
       tags:
-        - gorilla-ec
         - cart
       responses:
         "204":
           description: Cart cleared
   /cart/{id}:
     delete:
-      operationId: removeItemFromCart
+      operationId: remove-item-from-cart
       summary: Remove an item from the cart
       description: Remove a specific item from the shopping cart
       tags:
-        - gorilla-ec
         - cart
       parameters:
         - in: path
@@ -85,11 +79,10 @@ paths:
           description: Item removed
   /catalogue:
     get:
-      operationId: getAllProducts
+      operationId: get-all-products
       summary: Get all products
       description: Retrieve a list of all products in the catalogue
       tags:
-        - gorilla-ec
         - catalogue
       responses:
         "200":
@@ -102,11 +95,10 @@ paths:
                   $ref: "#/components/schemas/product"
   /orders:
     get:
-      operationId: getOrders
+      operationId: get-orders
       summary: Get all orders
       description: Retrieve a list of all customer orders
       tags:
-        - gorilla-ec
         - orders
       responses:
         "200":
@@ -118,11 +110,10 @@ paths:
                 items:
                   $ref: "#/components/schemas/order"
     post:
-      operationId: createOrder
+      operationId: create-order
       summary: Create a new order
       description: Create a new customer order
       tags:
-        - gorilla-ec
         - orders
       requestBody:
         required: true
@@ -141,7 +132,7 @@ paths:
           description: Internal Server Error (50% chance of failure)
 components:
   schemas:
-    cartItem:
+    cart:
       type: object
       properties:
         id:
@@ -169,4 +160,4 @@ components:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/cartItem"
+            $ref: "#/components/schemas/cart"

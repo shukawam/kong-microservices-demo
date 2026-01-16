@@ -1,0 +1,33 @@
+name: APIOps
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - schema/openapi.yaml
+      - .github/workflows/apiops.yaml
+      - dev-portal/**
+
+jobs:
+  apiops:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup inso cli
+        uses: shukawam/setup-inso@v2
+        with:
+          inso-version: 11.2.0
+          compression: tar.xz
+      - name: Setup deck cli
+        uses: kong/setup-deck@v1
+        with:
+          deck-version: 1.54.0
+      - name: Linting OpenAPI Spec
+        run: |
+          inso lint spec ./schema/openapi.yaml
+      - name: Convert OAS to decK format
+        run: |
+          deck file openapi2kong -s ./schema/openapi.yaml -o kong.yaml
+      - name: 
