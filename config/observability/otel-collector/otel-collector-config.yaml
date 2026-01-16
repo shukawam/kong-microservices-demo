@@ -5,27 +5,9 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-  prometheus:
-    config:
-      scrape_configs:
-        - job_name: kong-gateway
-          scrape_interval: 5s
-          static_configs:
-            - targets:
-                - gateway:8100 # Status API
-        - job_name: tempo
-          static_configs:
-            - targets:
-                - tempo:3200
 
 processors:
   batch:
-  # Kong HTTP Logプラグインは、unknown-serviceとしてログを送信するため、サービス名を追加する
-  resource/add-service-name:
-    attributes:
-      - key: service.name
-        value: kong
-        action: upsert
 
 exporters:
   otlphttp/tempo:
@@ -46,23 +28,14 @@ exporters:
 service:
   pipelines:
     traces:
-      receivers:
-        - otlp
-      processors:
-        - batch
-      exporters:
-        - otlphttp/tempo
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/tempo]
     metrics:
-      receivers:
-        - prometheus
-      exporters:
-        - prometheus
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
     logs:
-      receivers:
-        - otlp
-      processors:
-        - resource/add-service-name
-        - batch
-      exporters:
-        - debug
-        - otlphttp/loki
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/loki]

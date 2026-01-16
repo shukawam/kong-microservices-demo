@@ -1,5 +1,4 @@
 _format_version: "3.0"
-_transform: true
 
 services:
   - name: catalogue-service
@@ -9,17 +8,17 @@ services:
         paths:
           - /catalogue
         strip_path: false
-  - name: carts-service
-    url: http://carts:3002
+  - name: cart-service
+    url: http://cart:3002
     routes:
       - name: cart-route
         paths:
-          - /cart
+          - /carts
         strip_path: false
-  - name: orders-service
-    url: http://orders:3003
+  - name: order-service
+    url: http://order:3003
     routes:
-      - name: orders-route
+      - name: order-route
         paths:
           - /orders
         strip_path: false
