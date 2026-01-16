@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - schema/openapi.yaml
+      - schema/*.yaml
       - .github/workflows/apiops.yaml
       - dev-portal/**
 
@@ -29,5 +29,45 @@ jobs:
           inso lint spec ./schema/openapi.yaml
       - name: Convert OAS to decK format
         run: |
-          deck file openapi2kong -s ./schema/openapi.yaml -o kong.yaml
-      - name: 
+          deck file openapi2kong -s ./schema/cart.yaml -o cart.yaml
+          deck file openapi2kong -s ./schema/catalogue.yaml -o catalogue.yaml
+          deck file openapi2kong -s ./schema/order.yaml -o order.yaml
+      - name: Merge each APIs and global plugins
+        run: |
+          deck file merge \
+            -o kong.yaml \
+            cart.yaml \
+            catalogue.yaml \
+            order.yaml \
+            config/kong/global-plugins.yaml
+      - name: Validate decK config
+        run: |
+          deck gateway validate \
+            --konnect-compatibility \
+            --konnect-control-plane-name ${{ secrets.KONNECT_CONTROL_PLANE_NAME }} \
+            --konnect-token ${{ secrets.KONNECT_TOKEN }} \
+            kong.yaml
+      - name: Diff from current env
+        run: |
+          deck gateway diff \
+            --konnect-control-plane-name ${{ secrets.KONNECT_CONTROL_PLANE_NAME }} \
+            --konnect-token ${{ secrets.KONNECT_TOKEN }} \
+            kong.yaml
+      - name: Dump current state
+        run: |
+          deck gateway dump \
+            --konnect-control-plane-name ${{ secrets.KONNECT_CONTROL_PLANE_NAME }} \
+            --konnect-token ${{ secrets.KONNECT_TOKEN }} \
+            --skip-defaults \
+            -o dumped.yaml
+      - name: Backup current state
+        uses: actions/upload-artifact@v5
+        with:
+          name: dump
+          path: dumped.yaml
+      - name: Sync Kong config
+        run: |
+          deck gateway sync \
+            --konnect-control-plane-name ${{ secrets.KONNECT_CONTROL_PLANE_NAME }} \
+            --konnect-token ${{ secrets.KONNECT_TOKEN }} \
+            kong.yaml

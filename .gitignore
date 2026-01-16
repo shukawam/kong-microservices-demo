@@ -27,4 +27,4 @@ build/
 *.o
 
 # Custom
-build_images.sh
+certs/
