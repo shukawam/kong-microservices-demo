@@ -12,3 +12,11 @@ plugins:
         enable_request_metrics: true
         enable_upstream_health_metrics: true
         enable_consumer_attribute: true
+  - name: rate-limiting-advanced
+    config:
+      limit:
+        - 100
+      window_size:
+        - 60
+      window_type: sliding
+      namespace: rl-counter

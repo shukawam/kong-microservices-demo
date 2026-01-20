@@ -28,3 +28,5 @@ build/
 
 # Custom
 certs/
+
+mise.toml
