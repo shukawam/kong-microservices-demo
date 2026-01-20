@@ -8,6 +8,7 @@ on:
       - schema/*.yaml
       - .github/workflows/apiops.yaml
       - dev-portal/**
+      - config/kong/global-plugins.yaml
 
 jobs:
   apiops:
